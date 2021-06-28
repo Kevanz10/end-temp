@@ -36,3 +36,42 @@
     transform: rotate(360deg);
   }
 }
+
+.modal-benefits{
+  width: 500px;
+}
+
+
+.modal-benefits .modal-header{
+  color: white;
+  background-color: #868E96;
+}
+
+
+.close-icon-modal{
+  position: relative;
+  float: right;
+  width: 20px;
+  height: 20px;
+  right: 10px;
+  top: 10px;
+}
+
+.modal-benefits .modal-header h1{
+  clear: both;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+
+.modal-first-options{
+  display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.total-sub-benefit{
+  border: 1px solid #666666;
+}
