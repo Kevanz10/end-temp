@@ -1,0 +1,6 @@
+amplify-authenticator {
+    --container-height: calc(100vh - 90px);
+    --container-display: flex;
+    --container-justify: center;
+    --container-align: center;
+}
