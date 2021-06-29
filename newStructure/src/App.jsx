@@ -2,16 +2,44 @@ import React from 'react'
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import FlexibleBenefits from './shared/containers/FlexibleBenefits';
 import FlexibleBenefitsAuth from './shared/containers/FlexibleBenefitsAuth';
+import Amplify, { Auth, API } from 'aws-amplify';
 
-import awsconfig from './aws-exports';
-import Amplify, { Auth } from 'aws-amplify';
+Amplify.configure({
+  "aws_project_region": "us-east-1",
+  "aws_cognito_identity_pool_id": "us-east-1:e5928498-fcfd-44d5-98bc-e1442f9728d0",
+  "aws_cognito_region": "us-east-1",
+  "aws_user_pools_id": "us-east-1_sPhpDpr5x",
+  "aws_user_pools_web_client_id": "7t1vkjqhvsbp5h6f079prndgp9",
+  "oauth": {},
+  API: {
+  	endpoints: [
+  		{
+  			name: "benefit",
+  			endpoint: "https://0n3nnyqhaa.execute-api.us-east-1.amazonaws.com/dev/benefit"
+  		}
+  	]
+  }
+});
+Auth.configure({
+	"aws_project_region": "us-east-1",
+	"aws_cognito_identity_pool_id": "us-east-1:e5928498-fcfd-44d5-98bc-e1442f9728d0",
+	"aws_cognito_region": "us-east-1",
+	"aws_user_pools_id": "us-east-1_sPhpDpr5x",
+	"aws_user_pools_web_client_id": "7t1vkjqhvsbp5h6f079prndgp9",
+	"oauth": {}
+});
 
-Amplify.configure(awsconfig);
-Auth.configure(awsconfig);
 
 const App = () => {
     const [authState, setAuthState] = React.useState();
     const [user, setUser] = React.useState();
+    const items = API.get("benefit", {
+      'queryStringParameters': {
+        'benefitType': 'fcc0c8a9-ca3b-41fc-92c3-3b730b8682a6'
+      }
+    }).then((response) => {
+      console.log(response)
+    })
 
     React.useEffect(() => {
         return onAuthUIStateChange((nextAuthState, authData) => {
