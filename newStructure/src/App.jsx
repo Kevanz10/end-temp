@@ -14,8 +14,8 @@ Amplify.configure({
   API: {
   	endpoints: [
   		{
-  			name: "benefit",
-  			endpoint: "https://0n3nnyqhaa.execute-api.us-east-1.amazonaws.com/dev/benefit"
+  			name: "FBApi",
+  			endpoint: "https://0n3nnyqhaa.execute-api.us-east-1.amazonaws.com/dev",
   		}
   	]
   }
@@ -33,13 +33,7 @@ Auth.configure({
 const App = () => {
     const [authState, setAuthState] = React.useState();
     const [user, setUser] = React.useState();
-    const items = API.get("benefit", {
-      'queryStringParameters': {
-        'benefitType': 'fcc0c8a9-ca3b-41fc-92c3-3b730b8682a6'
-      }
-    }).then((response) => {
-      console.log(response)
-    })
+    
 
     React.useEffect(() => {
         return onAuthUIStateChange((nextAuthState, authData) => {
