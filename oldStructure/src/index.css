@@ -16,9 +16,6 @@ code {
     monospace;
 }
 
-
-
-
 .endava-text-color{
   color: #FF9933;
 }
@@ -63,4 +60,34 @@ code {
 
 .endava-bg-color{
   background-color: #FF9933;
+}
+
+
+.rounded-question-mark {
+    border: 1px solid;
+    border-radius: 22px;
+    height: 32px;
+    width: 30px;
+}
+
+.rounded-question-mark p {
+    position: relative;
+    left: -3px;
+    bottom: 3px;
+}
+
+.hover-trigger .hover-target {
+    display: none;
+}
+
+.hover-trigger:hover .hover-target {
+    display: block;
+    float: left;
+    right: 25px;
+    top: 38px;
+}
+
+.modal-logo{
+  width: 80px;
+  margin: 10px 25px;
 }
