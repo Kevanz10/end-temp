@@ -6,23 +6,25 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/solid'
 const Benefit = (props) => {
 	const { 
 		mainLogo, title, subtitle, benefitType, 
-		userBenefits, convertToPrice, hoverText 
+		userBenefits, convertToPrice, hoverText,
+		filterBenefitsByProviderId, currentBenefitType,
+		userBenefitTypesById
 	} = props
 
 	const parseTitle = () => {
-		return title.split(" ")
+		return benefitType.name.split(" ")
 	}
-	
+		
 	const editBenefit = () => {
-		props.setIsOpen(true);
 		props.setCurrentBenefitType(benefitType);
+		props.setIsOpen(true);
 	}
 
 	const getTotalAmount = () => {
-		if(userBenefits.length < 1){
+		if(userBenefitTypesById(benefitType.id).length < 1){
 			return 0;
 		}
-		return userBenefits.map((b) => b.cost).reduce((acc, cost) => cost + acc);
+		return userBenefitTypesById(benefitType.id).map((b) => b.cost).reduce((acc, cost) => cost + acc);
 	}
 
 	return (
@@ -53,13 +55,13 @@ const Benefit = (props) => {
 						<p className="pl-5 text-m text-left text-black">{subtitle}</p>
 					</div>
 					<div onClick={() => editBenefit(props)}>
-						<img className="add-icon mr-6" src={addIcon} />	
+						<img className="add-icon mr-6 jeje" src={addIcon} />	
 					</div>
 				</div>
 
 				<div>
 					{
-						userBenefits.length > 0 && userBenefits.map( (userBenefit, index) => {
+						userBenefits.length > 0 && userBenefitTypesById(benefitType.id).map( (userBenefit, index) => {
 							return (
 								<div className={(index % 2 === 0 ? "benefit-resume-row-gray" : "benefit-resume-row-orange")}>
 									<span className="pl-6">{userBenefit.name}</span>

@@ -3,8 +3,9 @@ import Navbar from '../components/header/Navbar';
 import Benefit from '../../components/Benefits/Benefit';
 import Modal from 'react-modal';
 import { 
-  getBenefitType, getBenefit, subtitles, 
-  customStyles, hoverBenefitText } from '../services/variables.js';
+  subtitles, 
+  customStyles, hoverBenefitText,
+  getBenefitType, getBenefit } from '../services/variables.js';
 import medicPlanLogo from '../../assets/images/medicPlanLogo.png';
 import odontoPlanLogo from '../../assets/images/odontoPlanLogo.png';
 import lifePlanLogo from '../../assets/images/lifeEnsurance.png';
@@ -38,7 +39,7 @@ const FlexibleBenefits = (props) => {
   }
 
   useEffect(() => {
-    getBenefitType().then( (response) => {
+    getBenefitType().then((response) => {      
       setBenefitTypes(response)
     })
     getBenefit().then((response) => {
@@ -61,13 +62,13 @@ const FlexibleBenefits = (props) => {
 
     const filterBenefitsByType = () => {
       return benefits.filter(
-        (benefit) => benefit.benefitType.id == currentBenefitType.id
+        (benefit) => benefit.benefitType.id === currentBenefitType.id
       )
     }
 
     const filterBySelectedOption = (val, arr) => {
       return (
-        Array.apply(null, arr).filter((a) => a.value == val)[0]
+        Array.apply(null, arr).filter((a) => a.value === val)[0]
       )
     }
   //end
@@ -78,7 +79,7 @@ const FlexibleBenefits = (props) => {
 
   //Adds Benefit while the modal is open 
   const addBenefit = () => {
-    if(currentBenefitTypeIndex == undefined){
+    if(currentBenefitTypeIndex === undefined){
       setTempBenefits(tempBenefits.concat(currentBenefitDetails))
     }else{
       tempBenefits[getIndexEditingBenefit()] = currentBenefitDetails
@@ -92,10 +93,6 @@ const FlexibleBenefits = (props) => {
   
   const getIndexEditingBenefit = () => {
     return tempBenefits.map((benefit) => benefit.index === currentBenefitTypeIndex).indexOf(true)
-  }
-
-  const filterTempBenefitsByType = () => {
-    return tempBenefits.filter((benefit) => benefit.benefitType.id == currentBenefitType.id )
   }
 
   const handleChangeProvider = (e) => {
@@ -139,18 +136,17 @@ const FlexibleBenefits = (props) => {
   }
 
   const filterBenefitsByProviderId = (id) => {
-    return filterBenefitsByType().filter((benefit) => benefit.serviceProvider.id == id)
+    return filterBenefitsByType().filter((benefit) => benefit.serviceProvider.id === id)
   }
 
   const handleAmountBenefit = (e) => { 
-    //problem
-    if (currentBenefitDetails.pricePerUnit == undefined) {
+    if (currentBenefitDetails.pricePerUnit === undefined) {
       return;
     }
-    if (e.target.value == undefined){
+    if (e.target.value === undefined){
       return;
     }
-    if (e.target.value == ''){
+    if (e.target.value === ''){
       return;
     }
     if (parseInt(e.target.value) < 0){
@@ -177,7 +173,6 @@ const FlexibleBenefits = (props) => {
   }
 
   const deleteCurrentBenefit = (e) => {
-
     setTempBenefits(
       tempBenefits.filter((benefit) => benefit.index !== e)
     );
@@ -195,20 +190,24 @@ const FlexibleBenefits = (props) => {
     
   }
 
-  const filteredBenefitsByType = (providerId) => {
-    userBenefits.filter((e) => e.serviceProvider.id == providerId)
-  }
-
   const saveTempBenefit = () => {
-    setUserBenefits(
-      userBenefits.concat(tempBenefits)
-    )
-    closeModal(true);
+    let userNewBenefits = userBenefits.concat(tempBenefits)
+    setUserBenefits(userNewBenefits)
+    closeModal(true)
+    setTempBenefits(userNewBenefits)
   }
 
   const userBenefitTypesById = (id) => {
-    return userBenefits.filter((benefit) => benefit.benefitType.id == id)
+    return tempBenefits.filter((benefit) => benefit.benefitType.id === id)
   }
+
+  const getBenefitsTotal = (benefits) => {
+    if(benefits.length < 1){
+      return 0;
+    }
+    return benefits.map((b) => b.cost).reduce((acc, cost) => cost + acc);
+  }
+
   return (
     <div className="wrapper">
       <Navbar/>
@@ -223,13 +222,15 @@ const FlexibleBenefits = (props) => {
                       setIsOpen={setIsOpen}
                       modalIsOpen={modalIsOpen}
                       mainLogo={medicPlanLogo}
-                      title={benefitType.name}
-                      subtitle={subtitles[index]}
                       benefitType={benefitType}
+                      subtitle={subtitles[index]}
                       setCurrentBenefitType={setCurrentBenefitType}
-                      userBenefits={userBenefitTypesById(benefitType.id)}
+                      userBenefits={userBenefits}
                       convertToPrice={convertToPrice}
                       hoverText={hoverBenefitText[index]}
+                      filterBenefitsByProviderId={filterBenefitsByProviderId}
+                      currentBenefitType={currentBenefitType}
+                      userBenefitTypesById={userBenefitTypesById}
                       />
                   </div>
                 )
@@ -238,7 +239,7 @@ const FlexibleBenefits = (props) => {
           </div>
           <div className="main-card-resume-total text-right my-10">
             <p className="text-black font-bold text-lg">
-              Total Beneficios Seleccionados:  <span className="endava-text-color">$</span>
+              Total Beneficios Seleccionados:  <span className="endava-text-color">{getBenefitsTotal(tempBenefits)}</span>
             </p>
             <div className="my-10">
               <p className="text-black font-bold text-xs">
@@ -257,8 +258,8 @@ const FlexibleBenefits = (props) => {
             <input type="text" type="checkbox" value={acceptTerms} />
             <p className="flex-1 text-black font-bold">
               He leído y acepto los
-              <a href="https://www.endava.com/en/Terms-and-Conditions" target="_blank" className="flex-1 endava-text-color"> terminos y condiciones</a><br/>
-              y las <a href="https://www.endava.com/en/Privacy-Notice" target="_blank" className="flex-1 endava-text-color">politicas de privacidad y tratamiento de datos</a>
+              <a href="https://www.endava.com/en/Terms-and-Conditions" target="_blank" rel="noreferrer" className="flex-1 endava-text-color"> terminos y condiciones</a><br/>
+              y las <a href="https://www.endava.com/en/Privacy-Notice" target="_blank" rel="noreferrer" className="flex-1 endava-text-color">politicas de privacidad y tratamiento de datos</a>
             </p>
             <button className={"endava-bg-color text-black font-bold py-2 px-4 rounded" + (!acceptTerms ? " cursor-not-allowed" : '')}>Submit</button>
           </div>
@@ -288,7 +289,7 @@ const FlexibleBenefits = (props) => {
                     { benefits.length > 0 && displayProviders() }
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                   </div>
                 </div>
                 <div className="relative inline-block w-full text-gray-700 my-5">
@@ -311,7 +312,7 @@ const FlexibleBenefits = (props) => {
                     })}
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                   </div>
                 </div>       
               </div>
@@ -357,7 +358,7 @@ const FlexibleBenefits = (props) => {
                       </tr>
                     </thead>
                     {
-                      tempBenefits.map((userBenefit) => {
+                      userBenefitTypesById(currentBenefitType.id).map((userBenefit) => {
                         return (
                           <tbody>
                             <tr>
