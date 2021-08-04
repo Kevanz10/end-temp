@@ -1,0 +1,16 @@
+.rounded-question-mark p {
+    position: relative;
+    left: -3px;
+    bottom: 3px;
+}
+
+.hover-trigger .hover-target {
+    display: none;
+}
+
+.hover-trigger:hover .hover-target {
+    display: block;
+    float: left;
+    right: 25px;
+    top: 38px;
+}
