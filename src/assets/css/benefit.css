@@ -184,6 +184,7 @@ code {
 .benefit-details:hover + .benefit-info{
   transition: all 1s ease;
   opacity: 1;
+  z-index: 9;
 }
 
 .benefit-resume-row-gray{

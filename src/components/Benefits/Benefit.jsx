@@ -58,10 +58,10 @@ const Benefit = (props) => {
 				</div>
 
 				<div>
-					{
+					{ 
 						userBenefits.length > 0 && userBenefits.map( (userBenefit, index) => {
 							return (
-								<div key={userBenefit.index.toString()} className={(index % 2 === 0 ? "benefit-resume-row-gray" : "benefit-resume-row-orange")}>
+								<div key={userBenefit.index?.toString()} className={(index % 2 === 0 ? "benefit-resume-row-gray" : "benefit-resume-row-orange")}>
 									<span className="pl-6">{userBenefit.name}</span>
 									<div className="relative flex">
 										<div className="flex-1 text-center">

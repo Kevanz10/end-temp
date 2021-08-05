@@ -6,7 +6,6 @@ import { getBenefitType, getBenefit, subtitles, customStyles, hoverBenefitText }
 import medicPlanLogo from '../../assets/images/medicPlanLogo.png';
 import closeIcon from '../../assets/images/closeIcon.png';
 import addIcon from '../../assets/images/addIcon.png';
-import saveIcon from '../../assets/images/saveIcon.png';
 import '../../assets/css/benefit.css';
 import { CheckIcon, XIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
 
@@ -19,19 +18,13 @@ const FlexibleBenefits = (props) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [currentBenefitDetails, setCurrentBenefitDetails] = useState({});
   const [filterBenefits, setFilterBenefits] = useState([]);
-
   const [userBenefits, setUserBenefits] = useState([])
-  //const [userDetails, setUserDetails] = useState({});
-
   const [benefitTypes, setBenefitTypes] = useState([]);
   const [benefits, setBenefits] = useState([]);
-  
+  //const [userDetails, setUserDetails] = useState({});
   const [currentBenefitTypeIndex, setCurrentBenefitTypeIndex] = useState();
   const [currentBenefitType, setCurrentBenefitType] = useState({});
   const [tempBenefits, setTempBenefits] = useState([]);
-
-  //UI set
-  const addBenefitIcon = document.querySelector('#addBenefitIcon');
   
   const closeModal = () => {
     setCurrentBenefitType({});
@@ -83,9 +76,6 @@ const FlexibleBenefits = (props) => {
 
   //Adds Benefit while the modal is open 
   const addBenefit = () => {
-    if(emptyJson(currentBenefitDetails)){
-      return;
-    }
     if(currentBenefitTypeIndex === undefined){
       setTempBenefits(tempBenefits.concat(currentBenefitDetails))
     }else{
@@ -95,22 +85,15 @@ const FlexibleBenefits = (props) => {
     
     setCurrentBenefitTypeIndex();
     setCurrentBenefitDetails({});
-
-    addBenefitIcon.src = addIcon;
   }
   
   const getIndexEditingBenefit = () => {
     return tempBenefits.map((benefit) => benefit.index === currentBenefitTypeIndex).indexOf(true)
   }
 
-  const emptyJson = (obj) => {
-    if(Object.keys(obj).length === 0)
-      return true;
-    
-    return !obj.amountOfPeople || +obj.amountOfPeople <= 0;
-  }
 
   const handleChangeProvider = (e) => {
+    
     const selectedOptionName = e.target[e.target.selectedIndex].dataset?.name;
     setFilterBenefits(
       filterBenefitsByProviderId(e.target.value)
@@ -159,6 +142,7 @@ const FlexibleBenefits = (props) => {
   }
 
   const handleAmountBenefit = (e) => { 
+    //problem
     if (currentBenefitDetails.pricePerUnit === undefined) {
       return;
     }
@@ -187,6 +171,7 @@ const FlexibleBenefits = (props) => {
   }
 
   const convertToPrice = (val = 0) => {
+    
     return (val).toLocaleString('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -194,28 +179,39 @@ const FlexibleBenefits = (props) => {
     });
   }
 
+  const getTotalAmount = () => {
+		if(userBenefits.length < 1){
+			return 0;
+		}
+		return userBenefits.map((b) => b.cost).reduce((acc, cost) => cost + acc);
+	}
+
   const deleteCurrentBenefit = (e) => {
+
     setTempBenefits(
       tempBenefits.filter((benefit) => benefit.index !== e)
     );
   }
 
   const editCurrentBenefit = (i) => {
-    try{
-      let selectedBenefit = tempBenefits.filter((benefit) => benefit.index === i)[0]
-      setCurrentBenefitTypeIndex(i);
-      setCurrentBenefitDetails(
-        selectedBenefit
-      )
-      setFilterBenefits(
-        filterBenefitsByProviderId(selectedBenefit.serviceProvider.id)
-      )
-      addBenefitIcon.src = saveIcon;
-    }
-    catch(err){ console.log(err.message) }
+    let selectedBenefit = tempBenefits.filter((benefit) => benefit.index === i)[0]
+    setCurrentBenefitTypeIndex(i);
+    setCurrentBenefitDetails(
+      selectedBenefit
+    )
+    setFilterBenefits(
+     filterBenefitsByProviderId(selectedBenefit.serviceProvider.id)
+    )
+    
   }
 
+  // const filteredBenefitsByType = (providerId) => {
+  //   userBenefits.filter((e) => e.serviceProvider.id === providerId)
+  // }
+
   const saveTempBenefit = () => {
+    console.log('tempBenefits', tempBenefits)
+    console.log('userBenefits.concat(tempBenefits)', userBenefits.concat(tempBenefits))
     setUserBenefits(
       userBenefits.concat(tempBenefits)
     )
@@ -225,13 +221,6 @@ const FlexibleBenefits = (props) => {
   const userBenefitTypesById = (id) => {
     return userBenefits.filter((benefit) => benefit.benefitType.id === id)
   }
-
-  const getBenefitsTotal = () => {
-		if(userBenefits.length < 1){
-			return 0;
-		}
-		return userBenefits.map((b) => b.cost).reduce((acc, cost) => cost + acc);
-	}
   
   return (
     <div className="wrapper">
@@ -262,7 +251,7 @@ const FlexibleBenefits = (props) => {
           </div>
           <div className="main-card-resume-total text-right my-10">
             <p className="text-black font-bold text-lg">
-              Total Beneficios Seleccionados:  <span className="endava-text-color">{convertToPrice(getBenefitsTotal())}</span>
+              Total Beneficios Seleccionados:  <span className="endava-text-color">{convertToPrice(getTotalAmount())}</span>
             </p>
             <div className="my-10">
               <p className="text-black font-bold text-xs">
@@ -365,7 +354,7 @@ const FlexibleBenefits = (props) => {
                 Total {currentBenefitDetails.cost ? convertToPrice(currentBenefitDetails.cost) : '$0'}
               </p>
             </div>
-            <img id="addBenefitIcon" className="add-icon mr-2 float-right relative right-10 cursor-pointer" src={addIcon} onClick={addBenefit} alt="Add"/>
+            <img className="add-icon mr-2 float-right relative right-10 cursor-pointer" src={addIcon} onClick={addBenefit} alt="Add"/>
             <div className="summary-benefit clear-both font-bold text-black">
               <p className="text-center end mb-5">Resumen</p>
             </div>
