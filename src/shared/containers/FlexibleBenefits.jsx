@@ -365,7 +365,7 @@ const FlexibleBenefits = (props) => {
                 Total {currentBenefitDetails.cost ? convertToPrice(currentBenefitDetails.cost) : '$0'}
               </p>
             </div>
-            <img id="addBenefitIcon" className="add-icon mr-2 float-right relative right-10 cursor-pointer" src={addIcon} onClick={addBenefit} alt="Add"/>
+            <img id="addBenefitIcon" className={"add-icon mr-2 float-right relative right-10 cursor-pointer" + (emptyJson(currentBenefitDetails) ? ' opacity-50 cursor-not-allowed': '' ) } src={addIcon} onClick={addBenefit} alt="Add"/>
             <div className="summary-benefit clear-both font-bold text-black">
               <p className="text-center end mb-5">Resumen</p>
             </div>
