@@ -232,6 +232,13 @@ const FlexibleBenefits = (props) => {
 		}
 		return userBenefits.map((b) => b.cost).reduce((acc, cost) => cost + acc);
 	}
+
+  const clearBenefitType = (childrenUserBenefits) => {
+      if( window.confirm("Seguro deseas borrar esta lista de beneficios?") ){
+      let difference = userBenefits.filter( benefit => !childrenUserBenefits.includes(benefit))
+      setUserBenefits(difference)
+    }
+  }
   
   return (
     <div className="wrapper">
@@ -254,6 +261,7 @@ const FlexibleBenefits = (props) => {
                       userBenefits={userBenefitTypesById(benefitType.id)}
                       convertToPrice={convertToPrice}
                       hoverText={hoverBenefitText[index]}
+                      clearBenefitType={clearBenefitType}
                     />
                   
                 )

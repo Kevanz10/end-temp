@@ -41,7 +41,7 @@ const Benefit = (props) => {
 						<h1 className="text-lg text-center text-black font-bold">{benefitType.name}</h1>
 					</div>
 					<div className="benefit-details">
-						<QuestionMarkCircleIcon className="add-icon mr-6 cursor-pointer" onClick={() => ""}/>
+						<QuestionMarkCircleIcon className="add-icon mr-6 cursor-pointer"/>
 					</div>
 					<p className="absolute text-black text-xs whitespace-pre-wrap benefit-info p-4">
 						{hoverText}
@@ -79,7 +79,7 @@ const Benefit = (props) => {
 				<div className="card-details h-40"></div>
 				<div className="card-actions">
 					<div className="flex space-x-4 my-4">
-						<img className="h-8 pl-10" src={deleteIcon}  alt="Delete" />
+						<img className="h-8 pl-10 cursor-pointer" src={deleteIcon}  alt="Delete" onClick={() => props.clearBenefitType(userBenefits)} />
 						<p className="flex-1 text-lg text-center text-black font-bold">Total</p>
 						<p className="flex-1 text-lg text-left text-black font-bold endava-text-color">{convertToPrice(getTotalAmount())}</p>
 					</div>
